@@ -9,12 +9,17 @@
 import Foundation
 
 /** Operation for file uploading. */
-internal class FileUploadOperation: WriteStreamOperation {
+internal class FileUploadOperation: WriteStreamOperation, SessionTask {
     fileprivate var fileHandle: FileHandle?
     var fileURL: URL!
     
+    let progress: Progress? = Progress(totalUnitCount: 100)
+    
     override func start() {
         do {
+            self.progress?.kind = .file
+            self.progress?.totalUnitCount = try FileManager.default.attributesOfItem(atPath: fileURL.path)[.size] as? Int64 ?? 0
+            
             self.fileHandle = try FileHandle(forReadingFrom: fileURL)
             self.startOperationWithStream(self.writeStream)
         } catch let error as NSError {
@@ -40,8 +45,10 @@ internal class FileUploadOperation: WriteStreamOperation {
             let data = self.fileHandle!.readData(ofLength: 1024)
             let writtenBytes = writeStream.write((data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), maxLength: data.count)
             if writtenBytes > 0 {
+                self.progress?.completedUnitCount = Int64(offsetInFile + UInt64(writtenBytes))
                 self.fileHandle?.seek(toFileOffset: offsetInFile + UInt64(writtenBytes))
             } else if writtenBytes == -1 {
+                self.progress?.completedUnitCount = self.progress?.totalUnitCount ?? 0
                 self.finishOperation()
             }
         }
