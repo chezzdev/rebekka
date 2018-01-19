@@ -12,7 +12,6 @@ public typealias ResourceResultCompletionHandler = ([ResourceItem]?, NSError?) -
 public typealias FileURLResultCompletionHandler = (URL?, NSError?) -> Void
 public typealias BooleanResultCompletionHandler = (Bool, NSError?) -> Void
 
-
 public protocol SessionTask {
     func cancel()
     var progress: Progress? { get }
@@ -30,7 +29,6 @@ extension DirectoryCreationOperation: SessionTask {
     var progress: Progress? { return nil }
 }
 
-
 /** The FTP session. */
 open class Session {
     /** The serial private operation queue. */
@@ -46,7 +44,7 @@ open class Session {
     fileprivate let configuration: SessionConfiguration
     
     public init(configuration: SessionConfiguration,
-        completionHandlerQueue: OperationQueue = OperationQueue.main) {
+                completionHandlerQueue: OperationQueue = OperationQueue.main) {
             self.operationQueue = OperationQueue()
             self.operationQueue.maxConcurrentOperationCount = 1
             self.operationQueue.name = "net.ftp.rebekka.operations.queue"
@@ -56,6 +54,7 @@ open class Session {
     }
     
     /** Returns content of directory at path. */
+    @discardableResult
     open func list(_ path: String, completionHandler: @escaping ResourceResultCompletionHandler) -> SessionTask {
         let operation = ResourceListOperation(configuration: configuration, queue: self.streamQueue)
         operation.completionBlock = {
@@ -76,7 +75,9 @@ open class Session {
     }
     
     /** Creates new directory at path. */
-    open func createDirectory(_ path: String, completionHandler: @escaping BooleanResultCompletionHandler) -> SessionTask {
+    @discardableResult
+    open func createDirectory(_ path: String,
+                              completionHandler: @escaping BooleanResultCompletionHandler) -> SessionTask {
         let operation = DirectoryCreationOperation(configuration: configuration, queue: self.streamQueue)
         operation.completionBlock = {
             [weak operation] in
@@ -98,6 +99,7 @@ open class Session {
     /** 
     Downloads file at path from FTP server.
     File is stored in /tmp directory. Caller is responsible for deleting this file. */
+    @discardableResult
     open func download(_ path: String, completionHandler: @escaping FileURLResultCompletionHandler) -> SessionTask {
         let operation = FileDownloadOperation(configuration: configuration, queue: self.streamQueue)
         operation.completionBlock = {
@@ -115,7 +117,9 @@ open class Session {
     }
     
     /** Uploads file from fileURL at path. */
-    open func upload(_ fileURL: URL, path: String, completionHandler: @escaping BooleanResultCompletionHandler) -> SessionTask {
+    @discardableResult
+    open func upload(_ fileURL: URL, path: String,
+                     completionHandler: @escaping BooleanResultCompletionHandler) -> SessionTask {
         let operation = FileUploadOperation(configuration: configuration, queue: self.streamQueue)
         operation.completionBlock = {
             [weak operation] in
