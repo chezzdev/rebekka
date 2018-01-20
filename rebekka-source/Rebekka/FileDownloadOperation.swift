@@ -21,13 +21,13 @@ internal class FileDownloadOperation: ReadStreamOperation {
             try Data().write(to: self.fileURL!, options: NSData.WritingOptions.atomic)
             self.fileHandle = try FileHandle(forWritingTo: self.fileURL!)
             self.startOperationWithStream(self.readStream)
-        } catch let error as NSError {
+        } catch {
             self.error = error
             self.finishOperation()
         }
     }
     
-    override func streamEventEnd(_ aStream: Stream) -> (Bool, NSError?) {
+    override func streamEventEnd(_ aStream: Stream) -> (Bool, Error?) {
         self.fileHandle?.closeFile()
         return (true, nil)
     }
@@ -44,7 +44,7 @@ internal class FileDownloadOperation: ReadStreamOperation {
         self.fileURL = nil
     }
     
-    override func streamEventHasBytes(_ aStream: Stream) -> (Bool, NSError?) {
+    override func streamEventHasBytes(_ aStream: Stream) -> (Bool, Error?) {
         if let inputStream = aStream as? InputStream {
             var parsetBytes: Int = 0
             repeat {

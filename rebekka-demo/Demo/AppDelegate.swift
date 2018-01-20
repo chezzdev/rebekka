@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let fileURL = fileURL {
                 do {
                     try FileManager.default.removeItem(at: fileURL)
-                } catch let error as NSError {
+                } catch {
                     print("Error: \(error)")
                 }
                 

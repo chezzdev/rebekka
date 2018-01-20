@@ -18,7 +18,7 @@ internal enum OperationState {
 /** The base class for FTP operations used in framework. */
 internal class Operation: Foundation.Operation {
 
-    var error: NSError?
+    var error: Error?
     
     internal let configuration: SessionConfiguration
     

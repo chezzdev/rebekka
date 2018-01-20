@@ -22,14 +22,14 @@ internal class FileUploadOperation: WriteStreamOperation, SessionTask {
             
             self.fileHandle = try FileHandle(forReadingFrom: fileURL)
             self.startOperationWithStream(self.writeStream)
-        } catch let error as NSError {
+        } catch {
             self.error = error
             self.fileHandle = nil
             self.finishOperation()
         }
     }
     
-    override func streamEventEnd(_ aStream: Stream) -> (Bool, NSError?) {
+    override func streamEventEnd(_ aStream: Stream) -> (Bool, Error?) {
         self.fileHandle?.closeFile()
         return (true, nil)
     }
@@ -39,7 +39,7 @@ internal class FileUploadOperation: WriteStreamOperation, SessionTask {
         self.fileHandle?.closeFile()
     }
     
-    override func streamEventHasSpace(_ aStream: Stream) -> (Bool, NSError?) {
+    override func streamEventHasSpace(_ aStream: Stream) -> (Bool, Error?) {
         if let writeStream = aStream as? OutputStream {
             let offsetInFile = self.fileHandle!.offsetInFile
             let data = self.fileHandle!.readData(ofLength: 1024)

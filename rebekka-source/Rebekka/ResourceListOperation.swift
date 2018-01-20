@@ -59,7 +59,7 @@ internal class ResourceListOperation: ReadStreamOperation {
     fileprivate var inputData: NSMutableData?
     var resources: [ResourceItem]?
     
-    override func streamEventEnd(_ aStream: Stream) -> (Bool, NSError?) {
+    override func streamEventEnd(_ aStream: Stream) -> (Bool, Error?) {
         var offset = 0
         let bytes = self.inputData!.bytes.bindMemory(to: UInt8.self, capacity: (self.inputData?.length)!)
         let totalBytes = CFIndex(self.inputData!.length)
@@ -122,7 +122,7 @@ internal class ResourceListOperation: ReadStreamOperation {
         return item
     }
     
-    override func streamEventHasBytes(_ aStream: Stream) -> (Bool, NSError?) {
+    override func streamEventHasBytes(_ aStream: Stream) -> (Bool, Error?) {
         if let inputStream = aStream as? InputStream {
             let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1024)
             let result = inputStream.read(buffer, maxLength: 1024)

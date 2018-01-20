@@ -75,23 +75,23 @@ internal class StreamOperation: Operation, StreamDelegate {
 		self.state = .finished
 	}
 
-	func streamEventOpenComleted(_ aStream: Stream) -> (Bool, NSError?) {
+	func streamEventOpenComleted(_ aStream: Stream) -> (Bool, Error?) {
 		return (true, nil)
 	}
 
-	func streamEventEnd(_ aStream: Stream) -> (Bool, NSError?) {
+	func streamEventEnd(_ aStream: Stream) -> (Bool, Error?) {
 		return (true, nil)
 	}
 
-	func streamEventHasBytes(_ aStream: Stream) -> (Bool, NSError?) {
+	func streamEventHasBytes(_ aStream: Stream) -> (Bool, Error?) {
 		return (true, nil)
 	}
 
-	func streamEventHasSpace(_ aStream: Stream) -> (Bool, NSError?) {
+	func streamEventHasSpace(_ aStream: Stream) -> (Bool, Error?) {
 		return (true, nil)
 	}
 
 	func streamEventError(_ aStream: Stream) {
-		self.error = aStream.streamError as NSError?
+		self.error = aStream.streamError
 	}
 }

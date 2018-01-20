@@ -8,9 +8,9 @@
 
 import Foundation
 
-public typealias ResourceResultCompletionHandler = ([ResourceItem]?, NSError?) -> Void
-public typealias FileURLResultCompletionHandler = (URL?, NSError?) -> Void
-public typealias BooleanResultCompletionHandler = (Bool, NSError?) -> Void
+public typealias ResourceResultCompletionHandler = ([ResourceItem]?, Error?) -> Void
+public typealias FileURLResultCompletionHandler = (URL?, Error?) -> Void
+public typealias BooleanResultCompletionHandler = (Bool, Error?) -> Void
 
 public protocol SessionTask {
     func cancel()
